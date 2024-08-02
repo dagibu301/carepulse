@@ -1,34 +1,31 @@
 "use client"
 
+// Libs
+import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-
-import { Button } from "@/components/ui/button"
+// Components
 import {
     Form,
 } from "@/components/ui/form"
 import CustomFormField, { FormFieldType } from "../CustomFormField"
-
-const formSchema = z.object({
-    name: z.string().min(2, {
-        message: "Username must be at least 2 characters.",
-    }),
-})
+import SubmitButton from "../SubmitButton"
+import { UserFormValidation } from "@/lib/validation"
 
 const PatientForm = () => {
-    // 1. Define your form.
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const [isLoading, setIsLoading] = useState(false)
+
+    const form = useForm<z.infer<typeof UserFormValidation>>({
+        resolver: zodResolver(UserFormValidation),
         defaultValues: {
             name: "",
+            email: "",
+            phone: "",
         },
     })
 
-    // 2. Define a submit handler.
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
+    function onSubmit(values: z.infer<typeof UserFormValidation>) {
         console.log(values)
     }
     return (
@@ -67,7 +64,8 @@ const PatientForm = () => {
                     placeholder="(555) 123-4567"
                 />
 
-                <Button type="submit">Submit</Button>
+                <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
+
             </form>
         </Form>
     )
